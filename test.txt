@@ -1,0 +1,156 @@
+Test case 1:
+Server: python3 ChatApp.py -s 1024
+Client x: python3 ChatApp.py -c x 127.0.0.1 1024 8888
+Client y: python3 ChatApp.py -c y 127.0.0.1 1024 9999
+Client z: python3 ChatApp.py -c z 127.0.0.1 1024 7777
+
+At x:
+>>> [Welcome, You are registered.]
+>>> [Client table updated.]
+>>> [Client table updated.]
+>>> [Client table updated.]
+>>> send y hello
+>>> [Message received by y.]
+>>> z: hello
+>>> send z hello
+>>> [Message received by z.]
+>>> y: hello
+>>> dereg x
+>>> [You are Offline. Bye.]
+>>> reg x
+>>> [Welcome back.]
+>>> [Client table updated.]
+>>> [You have messages]
+>>> y: <23:45:36> hello
+>>> z: <23:45:39> hello
+
+At y:
+>>> [Welcome, You are registered.]
+>>> [Client table updated.]
+>>> [Client table updated.]
+>>> x: hello
+>>> send z hello
+>>> [Message received by z.]
+>>> send x hello
+>>> [Message received by x.]
+>>> z: hello
+>>> [Client table updated.]
+>>> send x hello
+[Messages received by the server and saved]
+>>> [Client table updated.]
+
+At z:
+>>> [Welcome, You are registered.]
+>>> [Client table updated.]
+>>> y: hello
+>>> send x hello
+>>> [Message received by x.]
+>>> x: hello
+>>> send y hello
+>>> [Message received by y.]
+>>> [Client table updated.]
+>>> send x hello
+[Messages received by the server and saved]
+>>> [Client table updated.]
+
+--------------------------------------------------------------
+
+Test case 2:
+Server: python3 ChatApp.py -s 1024
+Client x: python3 ChatApp.py -c x 127.0.0.1 1024 8888
+Client y: python3 ChatApp.py -c y 127.0.0.1 1024 9999
+
+At x:
+>>> [Welcome, You are registered.]
+>>> [Client table updated.]
+>>> [Client table updated.]
+>>> [Client table updated.]
+>>> send y hello, y
+>>> [Server not responding]
+
+At y:
+>>> [Welcome, You are registered.]
+>>> [Client table updated.]
+>>> dereg y
+>>> [You are Offline. Bye.]
+
+--------------------------------------------------------------
+
+Test case 3:
+Server: python3 ChatApp.py -s 1024
+Client x: python3 ChatApp.py -c x 127.0.0.1 1024 8888
+Client y: python3 ChatApp.py -c y 127.0.0.1 1024 9999
+Client z: python3 ChatApp.py -c z 127.0.0.1 1024 7777
+
+At x:
+>>> [Welcome, You are registered.]
+>>> [Client table updated.]
+>>> [Client table updated.]
+>>> [Client table updated.]
+>>> send_all hello, world!
+>>> [Message received by Server.]
+
+At y:
+>>> [Welcome, You are registered.]
+>>> [Client table updated.]
+>>> [Client table updated.]
+>>> Channel_Message x: hello, world!
+
+At z:
+>>> [Welcome, You are registered.]
+>>> [Client table updated.]
+>>> Channel_Message x: hello, world!
+
+--------------------------------------------------------------
+
+SOME ADDITIONAL TESTS:
+
+
+Test case 4: (Bob dereg and server exit)
+// two clients: Alex and Bob
+// dereg Bob
+// exit server
+// chat Alex -> Bob
+
+At Alex:
+>>> [Client table updated.]
+>>> send Bob Are you still there?
+[Server not responding]
+
+At Bob:
+>>> dereg Bob
+>>> [You are Offline. Bye.]
+
+--------------------------------------------------------------
+
+Test case 5: (Group chat w/ log back)
+// three clients: Alex, Bob, and Jerry (same setup as in test case 1)
+// send group message Alex -> Group
+// dereg Jerry
+// send group message Bob -> Group
+// reg Jerry
+
+At Alex:
+>>> send_all Hi there!
+>>> [Message received by Server.]
+>>> [Client table updated.]
+>>> Channel_Message Bob: Hi Alex!
+>>> [Client table updated.]
+
+At Bob:
+>>> Channel_Message Alex: Hi there!
+>>> [Client table updated.]
+>>> send_all Hi Alex!
+>>> [Message received by Server.]
+>>> [Client table updated.]
+
+At Jerry:
+>>> Channel_Message Alex: Hi there!
+>>> dereg Jerry
+>>> [You are Offline. Bye.]
+>>> reg Jerry
+>>> [Welcome back.]
+>>> [Client table updated.]
+>>> [You have messages]
+>>> Channel_Message Bob: <22:22:42> Hi Alex!
+
